@@ -15,8 +15,9 @@ if "HF_TOKEN" not in os.environ:
 
 app = Flask(__name__)
 
-# Enable CORS for all routes and origins to prevent Vercel connection issues
-CORS(app)
+# Configure CORS for production (Vercel) vs local dev
+frontend_url = os.environ.get("FRONTEND_URL", "*").rstrip("/")
+CORS(app, origins=[frontend_url] if frontend_url != "*" else "*")
 
 # Global variables to store our model and preprocessors
 clf = None
