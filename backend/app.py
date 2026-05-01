@@ -10,6 +10,9 @@ import os
 import threading
 
 # Ensure the TabPFN token is provided for non-interactive license acceptance
+if "HF_TOKEN" not in os.environ:
+    print(f"Error: HF_TOKEN not found")
+
 if "TABPFN_TOKEN" not in os.environ:
     print(f"Error: TABPFN_TOKEN not found in environment variables. Please add it to Render.")
 
