@@ -14,17 +14,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let modelReady = false;
     let expectedFeatures = [];
 
-    // Auto-detect environment: use local backend if running locally, otherwise use Render production URL
     const BACKEND_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
         ? 'http://127.0.0.1:5000'
-        : 'https://YOUR-RENDER-APP-NAME.onrender.com'; // TODO: Update this when deploying
+        : 'https://credit-approval-api.onrender.com';
 
-    // Check backend status
     const pollStatus = setInterval(async () => {
         try {
             const response = await fetch(`${BACKEND_URL}/status`);
             const data = await response.json();
-            
+
             if (data.ready) {
                 modelReady = true;
                 expectedFeatures = data.features;
@@ -59,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData(form);
         const dataPayload = {};
-        
+
         formData.forEach((value, key) => {
             // Convert to numbers if they are strictly numerical strings
             dataPayload[key] = !isNaN(value) && value !== '' ? Number(value) : value;
@@ -67,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Ensure all 20 features are sent (use defaults if missing)
         // We defined all 20 in the HTML including hidden ones.
-        
+
         try {
             const response = await fetch(`${BACKEND_URL}/predict`, {
                 method: 'POST',
@@ -96,14 +94,14 @@ document.addEventListener('DOMContentLoaded', () => {
         fillBar.style.width = '0%';
 
         const isApproved = prediction === 'Approved';
-        
+
         // Populate modal
         resultCard.classList.add(isApproved ? 'approved' : 'rejected');
         titleStatus.innerText = isApproved ? 'Credit Approved' : 'Credit Rejected';
-        resultDesc.innerText = isApproved 
+        resultDesc.innerText = isApproved
             ? 'The TabPFN AI model considers this application low-risk based on historical German Credit data attributes.'
             : 'The TabPFN AI model has flagged this application as high-risk. Approval is not recommended.';
-        
+
         const perc = (confidence * 100).toFixed(1);
         confidenceText.innerText = `AI Certainty: ${perc}%`;
 
