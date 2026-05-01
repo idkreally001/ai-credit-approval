@@ -16,7 +16,7 @@ if "HF_TOKEN" not in os.environ:
 app = Flask(__name__)
 
 # Configure CORS for production (Vercel) vs local dev
-frontend_url = os.environ.get("FRONTEND_URL", "*").rstrip("/")
+frontend_url = os.environ.get("FRONTEND_URL", "*")
 CORS(app, origins=[frontend_url] if frontend_url != "*" else "*")
 
 # Global variables to store our model and preprocessors
@@ -47,7 +47,7 @@ def initialize_model():
         print(f"Features loaded: {len(feature_columns)}")
         
         # Identify categorical columns
-        categorical_cols = X.select_dtypes(include=['category', 'object', 'str']).columns.tolist()
+        categorical_cols = X.select_dtypes(include=['category', 'object']).columns.tolist()
         
         # Initialize the encoder for categorical data
         encoder = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
@@ -110,7 +110,7 @@ def predict():
         input_df = pd.DataFrame(input_data)
         
         # We need to ensure types match. Categorical to 'category' or 'object'
-        categorical_cols = input_df.select_dtypes(include=['object', 'str']).columns.tolist()
+        categorical_cols = input_df.select_dtypes(include=['object']).columns.tolist()
         if categorical_cols and encoder:
              input_df[categorical_cols] = encoder.transform(input_df[categorical_cols])
              
