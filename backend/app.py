@@ -9,9 +9,9 @@ import pandas as pd
 import os
 import threading
 
-# Automatically inject the HuggingFace token for gated models (Use env var in production)
-if "HF_TOKEN" not in os.environ:
-    print(f"Error: HF_TOKEN not found")
+# Ensure the TabPFN token is provided for non-interactive license acceptance
+if "TABPFN_TOKEN" not in os.environ:
+    print(f"Error: TABPFN_TOKEN not found in environment variables. Please add it to Render.")
 
 app = Flask(__name__)
 
